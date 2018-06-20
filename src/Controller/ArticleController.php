@@ -2,11 +2,12 @@
 
 namespace App\Controller;
 
-use Michelf\MarkdownInterface;
+use App\Service\MarkdownHelper;
+//use Michelf\MarkdownInterface;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\Cache\Adapter\AdapterInterface;
+//use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 //use Symfony\Component\HttpFoundation\Response;
 //use Twig\Environment;
@@ -24,16 +25,13 @@ class ArticleController extends AbstractController
     }
 
 
-
     /**
      * @Route("/news/{slug}", name="article_show")
      * @param $slug
-     * @param MarkdownInterface $markdown
-     * @param AdapterInterface $cache
+     * @param MarkdownHelper $markdownHelper
      * @return \Symfony\Component\HttpFoundation\Response
-     * @throws \Psr\Cache\InvalidArgumentException
      */
-    public function show($slug, MarkdownInterface $markdown, AdapterInterface $cache)
+    public function show($slug, MarkdownHelper $markdownHelper)
     {
         $comments = [
             'I ate a normal rock once. It did NOT taste like bacon!',
@@ -50,16 +48,9 @@ Meatball adipisicing ribeye bacon strip steak eu. Consectetur ham hock pork hamb
 
 
 EOF;
-
-        $item = $cache->getItem('markdown_'.md5($articleContent));
-        if (!$item->isHit()){
-            $item->set($markdown->transform($articleContent));
-            $cache->save($item);
-        }
-
-        $articleContent = $item->get();
-
-        dump($markdown);die();
+        $articleContent = $markdownHelper -> parse(
+            $articleContent
+            );
 
         return $this->render('article/show.html.twig', [
             'title' => ucwords(str_replace('-', ' ', $slug)),

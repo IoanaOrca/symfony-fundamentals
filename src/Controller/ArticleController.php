@@ -3,14 +3,10 @@
 namespace App\Controller;
 
 use App\Service\MarkdownHelper;
-//use Michelf\MarkdownInterface;
 use Psr\Log\LoggerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-//use Symfony\Component\Cache\Adapter\AdapterInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
-//use Symfony\Component\HttpFoundation\Response;
-//use Twig\Environment;
 
 class ArticleController extends AbstractController
 {
@@ -30,9 +26,12 @@ class ArticleController extends AbstractController
      * @param $slug
      * @param MarkdownHelper $markdownHelper
      * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Psr\Cache\InvalidArgumentException
      */
+
     public function show($slug, MarkdownHelper $markdownHelper)
     {
+
         $comments = [
             'I ate a normal rock once. It did NOT taste like bacon!',
             'Woohoo! I\'m going on an all-asteroid diet!',
